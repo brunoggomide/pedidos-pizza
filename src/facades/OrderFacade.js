@@ -1,54 +1,60 @@
-const modelFactory = require('../models/ModelFactory');
-const OrderObserver = require('../observers/OrderObserver');
+const modelFactory = require('../models/ModelFactory'); // Importa a fábrica de modelos
+const OrderObserver = require('../observers/OrderObserver'); // Importa o OrderObserver
 
 class OrderFacade {
   constructor(orderObserver) {
-    this.Order = modelFactory.getModel('Order');
-    this.Customer = modelFactory.getModel('Customer');
-    this.Pizza = modelFactory.getModel('Pizza');
-    this.orderObserver = orderObserver;
+    this.Order = modelFactory.getModel('Order'); // Obtém o modelo 'Order' da fábrica de modelos
+    this.Customer = modelFactory.getModel('Customer'); // Obtém o modelo 'Customer' da fábrica de modelos
+    this.Pizza = modelFactory.getModel('Pizza'); // Obtém o modelo 'Pizza' da fábrica de modelos
+    this.orderObserver = orderObserver; // Define o observador de pedidos
   }
 
   async createOrder(orderData) {
-    const { customer: customerId, pizzas: pizzaData } = orderData;
-
+    const { customer: customerId, pizzaIds } = orderData;
+  
     try {
-      // Fetch the customer
+      // Buscar o cliente pelo ID
       const customer = await this.Customer.findById(customerId);
-
+  
       if (!customer) {
-        throw new Error('Customer not found');
+        throw new Error('Cliente não encontrado');
       }
-
-      // Create the pizzas
-      const pizzas = await Promise.all(pizzaData.map(pizza => this.Pizza.create(pizza)));
-
-      // Calculate the total price of all pizzas
+  
+      // Buscar as pizzas pelo ID
+      const pizzas = await Promise.all(pizzaIds.map(pizzaId => this.Pizza.findById(pizzaId)));
+  
+      // Verificar se todas as pizzas foram encontradas
+      if (pizzas.some(pizza => !pizza)) {
+        throw new Error('Uma ou mais pizzas não encontradas');
+      }
+  
+      // Calcular o preço total de todas as pizzas
       const totalPrice = pizzas.reduce((total, pizza) => total + pizza.price, 0);
-
-      // Create the order
+  
+      // Criar o pedido
       const order = await this.Order.create({ customer, pizzas, totalPrice });
-
-      // Notify the order observer
+  
+      // Notificar o observador de pedidos
       this.orderObserver.notify(order);
-
+  
       return order;
     } catch (error) {
-      console.error('Error creating order:', error);
+      console.error('Erro ao criar o pedido:', error); // Registra um erro se ocorrer uma exceção
       throw error;
     }
   }
+  
 
   async updateOrder(orderId, updatedData) {
     try {
       const updatedOrder = await this.Order.findByIdAndUpdate(orderId, updatedData, { new: true });
 
-      // Notify the order observer
+      // Notificar o observador de pedidos
       this.orderObserver.notify(updatedOrder);
 
       return updatedOrder;
     } catch (error) {
-      console.error('Error updating order:', error);
+      console.error('Erro ao atualizar o pedido:', error); // Registra um erro se ocorrer uma exceção
       throw error;
     }
   }
@@ -57,12 +63,12 @@ class OrderFacade {
     try {
       const deletedOrder = await this.Order.findByIdAndDelete(orderId);
 
-      // Notify the order observer
-      this.orderObserver.notify(deletedOrder, 'deleted');
+      // Notificar o observador de pedidos
+      this.orderObserver.notify(deletedOrder, 'excluído');
 
       return deletedOrder;
     } catch (error) {
-      console.error('Error deleting order:', error);
+      console.error('Erro ao excluir o pedido:', error); // Registra um erro se ocorrer uma exceção
       throw error;
     }
   }
@@ -72,7 +78,7 @@ class OrderFacade {
       const orders = await this.Order.find();
       return orders;
     } catch (error) {
-      console.error('Error fetching orders:', error);
+      console.error('Erro ao buscar os pedidos:', error); // Registra um erro se ocorrer uma exceção
       throw error;
     }
   }
@@ -82,7 +88,7 @@ class OrderFacade {
       const order = await this.Order.findById(orderId);
       return order;
     } catch (error) {
-      console.error('Error fetching order:', error);
+      console.error('Erro ao buscar o pedido:', error); // Registra um erro se ocorrer uma exceção
       throw error;
     }
   }
@@ -92,7 +98,7 @@ class OrderFacade {
       const pizza = await this.Pizza.findById(pizzaId);
       return pizza;
     } catch (error) {
-      console.error('Error fetching pizza:', error);
+      console.error('Erro ao buscar a pizza:', error); // Registra um erro se ocorrer uma exceção
       throw error;
     }
   }
@@ -119,7 +125,7 @@ class OrderFacade {
 
       return ordersWithDetails;
     } catch (error) {
-      console.error('Error fetching customer orders:', error);
+      console.error('Erro ao buscar os pedidos do cliente:', error); // Registra um erro se ocorrer uma exceção
       throw error;
     }
   }
@@ -129,4 +135,4 @@ class OrderFacade {
   }
 }
 
-module.exports = OrderFacade;
+module.exports = OrderFacade; // Exporta a classe OrderFacade

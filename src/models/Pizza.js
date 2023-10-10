@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const pizzaSchema = new mongoose.Schema({
-  size: String,
   flavor: String,
+  description: String,
   price: Number,
 });
 
