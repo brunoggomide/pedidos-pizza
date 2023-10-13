@@ -1,5 +1,5 @@
 const express = require('express');
-const PizzaController = require('../controllers/pizzaController'); // Importa o controlador de pizzas (PizzaController)
+const PizzaController = require('../controllers/PizzaController'); // Importa o controlador de pizzas (PizzaController)
 
 function PizzaRoutes() {
   const router = express.Router();
