@@ -1,4 +1,4 @@
-const Pizza = require('../models/Pizza');
+const Pizza = require("../models/Pizza");
 
 class PizzaFacade {
   createPizza(data) {

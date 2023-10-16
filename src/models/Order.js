@@ -1,23 +1,23 @@
-const mongoose = require('mongoose');
-const OrderObserver = require('../observers/orderObserver');
+const mongoose = require("mongoose");
+const OrderObserver = require("../observers/orderObserver");
 
 const orderSchema = new mongoose.Schema({
-  customer: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer' },
-  pizzas: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Pizza' }],
+  customer: { type: mongoose.Schema.Types.ObjectId, ref: "Customer" },
+  pizzas: [{ type: mongoose.Schema.Types.ObjectId, ref: "Pizza" }],
   status: {
     type: String,
-    enum: ['Confirmando', 'Preparando', 'Pronto'],
-    default: 'Confirmando',
+    enum: ["Confirmando", "Preparando", "Pronto"],
+    default: "Confirmando",
   },
 });
 
-orderSchema.post('findOneAndUpdate', async function () {
+orderSchema.post("findOneAndUpdate", async function () {
   const order = await this.model.findOne(this.getFilter());
 
   const orderObserver = new OrderObserver();
-  orderObserver.update(order, 'atualizado');
+  orderObserver.update(order, "atualizado");
 });
 
-const Order = mongoose.model('Order', orderSchema);
+const Order = mongoose.model("Order", orderSchema);
 
 module.exports = Order;

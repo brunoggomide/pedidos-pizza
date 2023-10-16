@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const pizzaSchema = new mongoose.Schema({
   name: String,
@@ -6,6 +6,6 @@ const pizzaSchema = new mongoose.Schema({
   price: Number,
 });
 
-const Pizza = mongoose.model('Pizza', pizzaSchema);
+const Pizza = mongoose.model("Pizza", pizzaSchema);
 
 module.exports = Pizza;

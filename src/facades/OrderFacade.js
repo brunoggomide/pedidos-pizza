@@ -1,4 +1,4 @@
-const Order = require('../models/order');
+const Order = require("../models/order");
 
 class OrderFacade {
   createOrder(data) {
@@ -7,19 +7,21 @@ class OrderFacade {
   }
 
   getAllOrders() {
-    return Order.find().populate('customer pizzas');
+    return Order.find().populate("customer pizzas");
   }
 
   getOrderById(id) {
-    return Order.findById(id).populate('customer pizzas');
+    return Order.findById(id).populate("customer pizzas");
   }
 
   updateOrderById(id, data) {
-    return Order.findByIdAndUpdate(id, data, { new: true }).populate('customer pizzas');
+    return Order.findByIdAndUpdate(id, data, { new: true }).populate(
+      "customer pizzas"
+    );
   }
 
   deleteOrderById(id) {
-    return Order.findByIdAndRemove(id).populate('customer pizzas');
+    return Order.findByIdAndRemove(id).populate("customer pizzas");
   }
 }
 
