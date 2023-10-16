@@ -1,17 +1,23 @@
-const mongoose = require('mongoose'); // Importa o módulo Mongoose, que é uma biblioteca para modelagem de dados no MongoDB
+const mongoose = require('mongoose');
+const OrderObserver = require('../observers/OrderObserver');
 
-// Define o esquema (schema) de dados para pedidos
 const orderSchema = new mongoose.Schema({
-  customer: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer' }, // Referência ao cliente relacionado por meio do ID
-  pizzas: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Pizza' }], // Lista de IDs de pizzas relacionadas
+  customer: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer' },
+  pizzas: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Pizza' }],
   status: {
     type: String,
-    enum: ['Confirmando', 'Preparando', 'Pronto'], // Define um campo de status com opções enumeradas
-    default: 'Confirmando', // Valor padrão é 'Confirmando'
+    enum: ['Confirmando', 'Preparando', 'Pronto'],
+    default: 'Confirmando',
   },
 });
 
-// Cria um modelo (model) chamado 'Order' com base no esquema definido
+orderSchema.post('findOneAndUpdate', async function () {
+  const order = await this.model.findOne(this.getFilter());
+
+  const orderObserver = new OrderObserver();
+  orderObserver.update(order, 'atualizado');
+});
+
 const Order = mongoose.model('Order', orderSchema);
 
-module.exports = Order; // Exporta o modelo 'Order' para uso em outras partes do aplicativo
+module.exports = Order;

@@ -1,81 +1,74 @@
 const express = require('express');
-const PizzaController = require('../controllers/PizzaController'); // Importa o controlador de pizzas (PizzaController)
+const PizzaFacade = require('../facades/pizzaFacade');
+const PizzaFactory = require('../factories/pizzaFactory');
 
 function PizzaRoutes() {
-  const router = express.Router();
+const router = express.Router();
 
-  // Rota para criar uma nova pizza
-  router.post('/pizzas', async (req, res) => {
-    const pizzaData = req.body;
-
+    router.post('/pizzas', async (req, res) => {
     try {
-      const pizza = await PizzaController.createPizza(pizzaData);
-      res.status(201).json(pizza);
-    } catch (error) {
-      console.error('Erro ao criar a pizza:', error);
-      res.status(500).json({ error: 'Erro interno do servidor' });
+        const { flavor, description, price } = req.body;
+        const pizza = PizzaFactory.createPizza(flavor, description, price);
+        await PizzaFacade.createPizza(pizza);
+        res.json({ message: 'Pizza criada com sucesso' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-  });
+    });
 
-  // Rota para obter todas as pizzas
-  router.get('/pizzas', async (req, res) => {
-    try {
-      const pizzas = await PizzaController.getAllPizzas();
-      res.json(pizzas);
-    } catch (error) {
-      console.error('Erro ao buscar as pizzas:', error);
-      res.status(500).json({ error: 'Erro interno do servidor' });
-    }
-  });
+    router.get('/pizzas', async (req, res) => {
+        try {
+          const pizzas = await PizzaFacade.getAllPizzas();
+          res.json(pizzas);
+        } catch (err) {
+          res.status(500).json({ error: err.message });
+        }
+      });
+      
+      router.get('/pizzas/:id', async (req, res) => {
+        try {
+          const pizzaId = req.params.id;
+          const pizza = await PizzaFacade.getPizzaById(pizzaId); 
+          if (!pizza) {
+            res.status(404).json({ message: 'Pizza não encontrada' });
+          } else {
+            res.json(pizza);
+          }
+        } catch (err) {
+          res.status(500).json({ error: err.message });
+        }
+      });
+      
+      router.put('/pizzas/:id', async (req, res) => {
+        try {
+          const pizzaId = req.params.id;
+          const { flavor, description, price } = req.body;
+          const updatedPizza = await PizzaFacade.updatePizzaById(pizzaId, { flavor, description, price });
+          if (!updatedPizza) {
+            res.status(404).json({ message: 'Pizza não encontrada' });
+          } else {
+            res.json({ message: 'Pizza atualizada com sucesso' });
+          }
+        } catch (err) {
+          res.status(500).json({ error: err.message });
+        }
+      });
+      
+      router.delete('/pizzas/:id', async (req, res) => {
+        try {
+          const pizzaId = req.params.id;
+          const deletedPizza = await PizzaFacade.deletePizzaById(pizzaId);
+          if (!deletedPizza) {
+            res.status(404).json({ message: 'Pizza não encontrada' });
+          } else {
+            res.json({ message: 'Pizza excluída com sucesso' });
+          }
+        } catch (err) {
+          res.status(500).json({ error: err.message });
+        }
+      });
 
-  // Rota para obter uma pizza específica por ID
-  router.get('/pizzas/:pizzaId', async (req, res) => {
-    const pizzaId = req.params.pizzaId;
-    try {
-      const pizza = await PizzaController.getPizzaById(pizzaId);
-      if (!pizza) {
-        return res.status(404).json({ message: 'Pizza não encontrada' });
-      }
-      res.json(pizza);
-    } catch (error) {
-      console.error('Erro ao buscar a pizza:', error);
-      res.status(500).json({ error: 'Erro interno do servidor' });
-    }
-  });
-
-  // Rota para atualizar uma pizza por ID
-  router.put('/pizzas/:pizzaId', async (req, res) => {
-    const pizzaId = req.params.pizzaId;
-    const updatedData = req.body;
-
-    try {
-      const updatedPizza = await PizzaController.updatePizza(pizzaId, updatedData);
-      if (!updatedPizza) {
-        return res.status(404).json({ message: 'Pizza não encontrada' });
-      }
-      res.json(updatedPizza);
-    } catch (error) {
-      console.error('Erro ao atualizar a pizza:', error);
-      res.status(500).json({ error: 'Erro interno do servidor' });
-    }
-  });
-
-  // Rota para excluir uma pizza por ID
-  router.delete('/pizzas/:pizzaId', async (req, res) => {
-    const pizzaId = req.params.pizzaId;
-    try {
-      const deletedPizza = await PizzaController.deletePizza(pizzaId);
-      if (!deletedPizza) {
-        return res.status(404).json({ message: 'Pizza não encontrada' });
-      }
-      res.json({ message: 'Pizza excluída com sucesso' });
-    } catch (error) {
-      console.error('Erro ao excluir a pizza:', error);
-      res.status(500).json({ error: 'Erro interno do servidor' });
-    }
-  });
-
-  return router;
+    return router;
 }
 
 module.exports = PizzaRoutes;
