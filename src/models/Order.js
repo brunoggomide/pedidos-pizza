@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const OrderObserver = require('../observers/OrderObserver');
+const OrderObserver = require('../observers/orderObserver');
 
 const orderSchema = new mongoose.Schema({
   customer: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer' },

@@ -1,6 +1,6 @@
 const express = require('express');
-const CustomerFacade = require('../facades/CustomerFacade');
-const CustomerFactory = require('../factories/customerFactory');
+const CustomerFacade = require('../facades/customerFacade');
+const Factory = require('../factory'); 
 
 function CustomerRoutes() {
   const router = express.Router();
@@ -8,13 +8,15 @@ function CustomerRoutes() {
   router.post('/customers', async (req, res) => {
     try {
       const { name, table } = req.body;
-      const customer = CustomerFactory.createCustomer(name, table);
-      await CustomerFacade.createCustomer(customer);
+      const customerData = { name, table };
+      const newCustomer = Factory.create('customer', customerData);
+      await CustomerFacade.createCustomer(newCustomer);
       res.json({ message: 'Cliente criado com sucesso' });
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
-  });
+});
+
 
   router.get('/customers', async (req, res) => {
     try {

@@ -1,4 +1,4 @@
-const Customer = require('../models/Customer');
+const Customer = require('../models/customer');
 
 class CustomerFacade {
   createCustomer(data) {

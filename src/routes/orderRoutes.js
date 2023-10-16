@@ -1,7 +1,7 @@
 const express = require('express');
-const OrderFacade = require('../facades/OrderFacade');
-const OrderFactory = require('../factories/orderFactory');
-const OrderObserver = require('../observers/OrderObserver');
+const OrderFacade = require('../facades/orderFacade');
+const Factory = require('../factory');
+const OrderObserver = require('../observers/orderObserver');
 
 function OrderRoutes() {
   const router = express.Router();
@@ -9,14 +9,16 @@ function OrderRoutes() {
 
   router.post('/orders', async (req, res) => {
     try {
-      const { customer, pizzaIds, status } = req.body;
-      const order = OrderFactory.createOrder(customer, pizzaIds, status);
-      await OrderFacade.createOrder(order);
+      const { customer, pizzas, status } = req.body;
+      const orderData = { customer, pizzas, status };
+      const newOrder = Factory.create('order', orderData);
+      await OrderFacade.createOrder(newOrder);
       res.json({ message: 'Pedido criado com sucesso' });
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
-  });
+});
+
 
   router.get('/orders', async (req, res) => {
     try {
