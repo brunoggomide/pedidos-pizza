@@ -147,7 +147,6 @@ function OrderRoutes() {
    *         description: Erro no servidor.
    */
   router.put("/orders/:id", async (req, res) => {
-    console.log(req.body);
     try {
       const orderId = req.params.id;
       const { customer, pizzas, status } = req.body;
