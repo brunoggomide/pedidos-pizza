@@ -1,11 +1,25 @@
-Projeto para exemplificar alguns padrões de projetos bem conhecidos, como o Facade, o Observer e o State.
+# Trabalho da disciplina de framework de software
 
-O padrão Facade é usado para fornecer uma interface simplificada para os modelos Customer e Order. Isso torna mais fácil para os clientes dos facades interagirem com os modelos.
+O presente trabalho é para avaliar o uso de framework de software e design patterns da disciplina de framework de software do curso de engenharia de Software.
 
-O padrão Observer é usado para permitir que um objeto notifique outros objetos de mudanças em seu estado. Isso permite que outros componentes do sistema sejam notificados de mudanças nos pedidos sem ter que consultar diretamente o banco de dados.
+## Framework utilizado
 
-O padrão State é usado para representar os diferentes estados de um pedido. Isso torna mais fácil para o projeto controlar o fluxo de trabalho de um pedido, verificando o estado do pedido.
+Node.js: Versão 18.16.1
+Express.js
 
-O projeto também utiliza a classe ModelFactory para facilitar a criação de instâncias dos modelos Customer e Order. A ModelFactory é um exemplo do padrão de projeto Factory Method, que define uma interface para criar um objeto, mas deixa a instanciação real para as subclasses.
+### Design Pattern Criacional
 
-A arquitetura do projeto é flexível e reutilizável. O projeto pode ser facilmente expandido para adicionar novos recursos ou melhorar o desempenho.
+Factory Method: Permite que subclasses decidam quais classes de objetos instanciar.
+
+#### Design Pattern Estrutural
+
+Facade: Fornece uma interface simplificada para um conjunto de classes complexas.
+
+##### Design Pattern Estrutural
+
+Observer: Permite que você registre objetos para receber notificações de eventos.
+
+###### Execução do sistema
+
+npm install
+npm start
