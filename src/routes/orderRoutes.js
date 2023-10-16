@@ -132,7 +132,7 @@ function OrderRoutes() {
    *           properties:
    *             customer:
    *               type: string
-   *             pizzaIds:
+   *             pizzas:
    *               type: array
    *               items:
    *                 type: string
@@ -147,12 +147,13 @@ function OrderRoutes() {
    *         description: Erro no servidor.
    */
   router.put("/orders/:id", async (req, res) => {
+    console.log(req.body);
     try {
       const orderId = req.params.id;
-      const { customer, pizzaIds, status } = req.body;
+      const { customer, pizzas, status } = req.body;
       const updatedOrder = await OrderFacade.updateOrderById(orderId, {
         customer,
-        pizzas: pizzaIds,
+        pizzas: pizzas,
         status,
       });
       orderObserver.notify(updatedOrder);
