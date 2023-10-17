@@ -1,5 +1,5 @@
 const express = require("express");
-const PizzaFacade = require("../facades/PizzaFacade");
+const PizzaFacade = require("../facades/pizzaFacade");
 const Factory = require("../factory");
 
 /**
