@@ -41,8 +41,11 @@ function CustomerRoutes() {
       const { name, table } = req.body;
       const customerData = { name, table };
       const newCustomer = Factory.create("customer", customerData);
-      await CustomerFacade.createCustomer(newCustomer);
-      res.json({ message: "Cliente criado com sucesso" });
+      const createdCustomer = await CustomerFacade.createCustomer(newCustomer);
+      res.status(201).json({
+        message: "Cliente criado com sucesso",
+        customer: createdCustomer,
+      });
     } catch (err) {
       res.status(500).json({ error: err.message });
     }

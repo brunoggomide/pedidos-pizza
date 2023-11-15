@@ -150,12 +150,12 @@ function OrderRoutes() {
     try {
       const orderId = req.params.id;
       const { customer, pizzas, status } = req.body;
-      orderObserver.notify(updatedOrder);
       const updatedOrder = await OrderFacade.updateOrderById(orderId, {
         customer,
         pizzas: pizzas,
         status,
       });
+      orderObserver.notify(updatedOrder);
       if (!updatedOrder) {
         res.status(404).json({ message: "Pedido não encontrado" });
       } else {
