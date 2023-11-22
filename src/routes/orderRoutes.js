@@ -47,8 +47,11 @@ function OrderRoutes() {
       const { customer, pizzas, status } = req.body;
       const orderData = { customer, pizzas, status };
       const newOrder = Factory.create("order", orderData);
-      await OrderFacade.createOrder(newOrder);
-      res.json({ message: "Pedido criado com sucesso" });
+      const createdOrder = await OrderFacade.createOrder(newOrder);
+      res.status(201).json({
+        message: "Pedido criado com sucesso",
+        order: createdOrder,
+      });
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
