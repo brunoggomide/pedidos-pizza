@@ -43,8 +43,11 @@ function PizzaRoutes() {
       const { name, description, price } = req.body;
       const pizzaData = { name, description, price };
       const newPizza = Factory.create("pizza", pizzaData);
-      await PizzaFacade.createPizza(newPizza);
-      res.json({ message: "Pizza criada com sucesso" });
+      const createdPizza = await PizzaFacade.createPizza(newPizza);
+      res.status(201).json({
+        message: "Pizza criada com sucesso",
+        pizza: createdPizza,
+      });
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
